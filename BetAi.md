@@ -1,20 +1,34 @@
 # BetAI - Sports AI Agent Platform
 
 ## Project Overview
-A specialized AI agent platform focused exclusively on sports analysis, providing real-time insights, statistics, and betting odds calculations for Soccer, MLB, NFL, NBA, and WNBA. The platform will feature a ChatGPT-like interface but grounded entirely in sports data and recent news.
+A specialized AI agent platform focused exclusively on sports analysis, providing daily-updated insights, statistics, and betting odds analysis for Soccer, MLB, NFL, NBA, and WNBA. The platform features a ChatGPT-like interface grounded entirely in daily-refreshed sports data.
+
+**Key Difference:** This platform uses **daily batch data updates** instead of real-time API calls, making it cost-effective while still providing current information for betting decisions.
 
 **Tech Stack:**
 - **Frontend:** React/Next.js with TypeScript
-- **Backend:** Supabase (Database, Auth, Edge Functions)
+- **Backend:** Supabase (PostgreSQL Database, Auth, Edge Functions)
 - **AI Model:** Kimi K2 Thinking
 - **Deployment:** Netlify (Frontend), Supabase (Backend)
-- **Data Sources:** Sports APIs, News APIs, Web Scraping
+- **Data Strategy:** Daily batch updates (6 AM ET) via Edge Functions
+- **Data Sources:** Daily data files (CSV/JSON), manual uploads initially, automated ingestion later
+
+---
+
+## Roadmap Overview
+
+**Total Timeline:** 16-18 weeks (4-4.5 months)
+**Development Approach:** Phased implementation with daily batch data updates
+
+For complete detailed planning, see `PLANNING.md`
+For complete database schema, see `DATABASE_SCHEMA.md`
+For development guidelines, see `claude.md`
 
 ---
 
 ## Roadmap & Sprint Breakdown
 
-### 🎯 Sprint 1: Project Setup & Foundation (Week 1-2)
+### 🎯 Phase 1: Foundation & Setup (Week 1-2)
 
 #### Goals:
 - [ ] Initialize GitHub repository
@@ -49,417 +63,312 @@ A specialized AI agent platform focused exclusively on sports analysis, providin
 
 ---
 
-### 🎯 Sprint 2: Data Architecture & Integration (Week 3-4)
+### 🎯 Phase 2: Database & Data Pipeline (Week 3-5)
 
 #### Goals:
-- [ ] Design and implement database schema
-- [ ] Set up sports data ingestion pipeline
-- [ ] Integrate sports APIs (odds, scores, stats)
-- [ ] Create data models for all 5 sports
+- [ ] Design and implement complete database schema
+- [ ] Set up daily data ingestion pipeline
+- [ ] Create data models and TypeScript types
+- [ ] Implement automated daily updates
 
 #### Tasks:
 1. **Database Design**
-   - Design schema for teams, players, games, odds
-   - Create tables for soccer, MLB, NFL, NBA, WNBA
-   - Set up relationships and indexes
-   - Implement data versioning for historical analysis
+   - Implement complete schema (see DATABASE_SCHEMA.md)
+   - Create tables for all 5 sports (teams, players, games, odds, stats)
+   - Set up relationships, indexes, and constraints
+   - Implement Row Level Security policies
 
-2. **Sports Data Integration**
-   - Research and select sports data providers (The Odds API, SportsData.io, etc.)
-   - Implement API clients for each sport
-   - Create scheduled jobs for daily data updates
-   - Set up error handling and data validation
+2. **Data Pipeline Development**
+   - Create Supabase Edge Function for data ingestion
+   - Implement CSV/JSON file parsing and validation
+   - Set up daily cron jobs (6 AM ET)
+   - Create data transformation and normalization logic
+   - Implement error handling and retry mechanisms
 
-3. **News Integration**
-   - Integrate news APIs (NewsAPI, Bing News, etc.)
-   - Set up web scraping for sports-specific sources
-   - Create news categorization system
-   - Implement relevance scoring for sports content
+3. **TypeScript Integration**
+   - Generate Supabase types
+   - Create domain-specific types (Game, Team, Player, etc.)
+   - Build database access layer with CRUD operations
+   - Create custom React hooks (useTodaysGames, useWeekGames)
 
-4. **Data Processing Pipeline**
-   - Create Supabase Edge Functions for data processing
-   - Implement data transformation and normalization
-   - Set up caching strategies
-   - Create data quality monitoring
+4. **Data Quality & Monitoring**
+   - Create data validation checks
+   - Implement ingestion logging system
+   - Set up data freshness monitoring
+   - Create manual data upload process documentation
 
-**Deliverable:** Automated data pipeline feeding real-time sports data and news
+**Deliverable:** Complete database with automated daily data updates
 
 ---
 
-### 🎯 Sprint 3: AI Model Integration & Prompt Engineering (Week 5-6)
+### 🎯 Phase 3: Frontend Core (Week 6-8)
+
+#### Goals:
+- [ ] Build React component library
+- [ ] Create main layout and navigation
+- [ ] Implement dashboard with today's games
+- [ ] Build sports-specific display components
+
+#### Key Components:
+- Design system with Tailwind CSS
+- Reusable UI components (Button, Card, Badge, Modal)
+- Main layout with Header and Sidebar
+- Dashboard page showing today's games across all sports
+- GameCard, TeamCard, PlayerCard components
+- Global state management with Zustand
+- React Query for data caching and fetching
+
+**Deliverable:** Fully functional frontend displaying sports data
+
+---
+
+### 🎯 Phase 4: Sports Features (Week 9-11)
+
+#### Goals:
+- [ ] Build game detail pages
+- [ ] Create data visualization components
+- [ ] Implement team and player profile pages
+- [ ] Add betting tracker and odds comparison
+
+#### Key Features:
+- Comprehensive game detail pages with stats
+- Stats comparison tool (team vs team, player vs player)
+- Interactive charts (Recharts: line, bar, radar, pie)
+- Sport-specific visualizations (field position, shot charts, etc.)
+- Betting tracker with ROI calculations
+- Odds display and comparison
+
+**Deliverable:** Complete sports analysis features
+
+---
+
+### 🎯 Phase 5: AI Integration (Week 12-13)
 
 #### Goals:
 - [ ] Integrate Kimi K2 Thinking API
-- [ ] Develop sports-specific prompt templates
-- [ ] Implement RAG (Retrieval-Augmented Generation) system
-- [ ] Create context management system
+- [ ] Build ChatGPT-like chat interface
+- [ ] Implement RAG system for context retrieval
+- [ ] Create conversation management
 
-#### Tasks:
-1. **AI Model Setup**
-   - Set up Kimi K2 API integration
-   - Implement streaming responses
-   - Create error handling and retry logic
-   - Set up usage monitoring and rate limiting
+#### Key Tasks:
+1. **AI Chat Backend**
+   - Create AI chat Edge Function
+   - Implement context retrieval from sports data (RAG)
+   - Build prompts for sports analysis
+   - Set up streaming responses
 
-2. **RAG System Development**
-   - Implement vector embeddings for sports data
-   - Create similarity search for relevant context
-   - Build context window management
-   - Develop caching for frequent queries
+2. **Chat Interface**
+   - Build message list and input components
+   - Implement streaming message display
+   - Add conversation history
+   - Create quick action buttons ("Today's best bets", etc.)
+   - Add markdown rendering for AI responses
 
-3. **Prompt Engineering**
-   - Create sport-specific prompt templates
-   - Develop system prompts for different analysis types
-   - Implement few-shot examples for better responses
-   - Create prompt versioning system
-
-4. **Context Management**
-   - Build conversation history management
-   - Implement user preference storage
-   - Create session management
-   - Develop context-aware response generation
-
-**Deliverable:** AI system that can understand and respond to sports queries with relevant data
+**Deliverable:** Fully functional AI chat with sports context
 
 ---
 
-### 🎯 Sprint 4: Core Chat Interface (Week 7-8)
+### 🎯 Phase 6: Advanced Features & Polish (Week 14-15)
 
 #### Goals:
-- [ ] Build ChatGPT-like interface
-- [ ] Implement real-time chat functionality
-- [ ] Create sports-specific UI components
-- [ ] Add conversation history and management
+- [ ] Build user preferences system
+- [ ] Add notifications
+- [ ] Optimize performance
+- [ ] Ensure mobile responsiveness
 
-#### Tasks:
-1. **Chat Interface**
-   - Create message components (user/AI)
-   - Implement typing indicators
-   - Add markdown rendering for responses
-   - Build responsive design for mobile/desktop
+#### Key Tasks:
+- Settings page for user customization
+- Favorite sports and teams
+- In-app notification system
+- Performance optimization (bundle size, lazy loading, query optimization)
+- Mobile responsiveness testing and fixes
+- Accessibility improvements
 
-2. **Real-time Features**
-   - Implement WebSocket connections
-   - Add message streaming
-   - Create typing indicators
-   - Build presence indicators
-
-3. **Sports UI Components**
-   - Create game cards with live scores
-   - Build odds comparison tables
-   - Implement player/team stat displays
-   - Add interactive charts and visualizations
-
-4. **Conversation Management**
-   - Save chat history to database
-   - Implement conversation search
-   - Create conversation folders/labels
-   - Add export functionality
-
-**Deliverable:** Fully functional chat interface with sports-specific features
+**Deliverable:** Polished, performant, mobile-ready application
 
 ---
 
-### 🎯 Sprint 5: Sports Analysis Features (Week 9-10)
+### 🎯 Phase 7: Testing & Launch (Week 16-18)
 
 #### Goals:
-- [ ] Implement statistical analysis engine
-- [ ] Create odds calculation algorithms
-- [ ] Build team/player comparison tools
-- [ ] Add predictive modeling features
+- [ ] Write comprehensive tests
+- [ ] Fix all bugs
+- [ ] Perform security audit
+- [ ] Deploy to production
 
-#### Tasks:
-1. **Statistical Analysis**
-   - Implement advanced statistics calculations
-   - Create trend analysis algorithms
-   - Build performance metrics for each sport
-   - Add historical data analysis
-
-2. **Odds Calculation Engine**
-   - Implement probability calculations
-   - Create value bet detection algorithms
-   - Build odds comparison across bookmakers
-   - Add betting strategy recommendations
-
-3. **Comparison Tools**
-   - Create head-to-head analysis
-   - Build team/player comparison interfaces
-   - Implement matchup analysis
-   - Add strength of schedule calculations
-
-4. **Predictive Features**
-   - Implement basic prediction models
-   - Create win probability calculators
-   - Build score prediction algorithms
-   - Add confidence intervals and explanations
-
-**Deliverable:** Advanced sports analysis tools integrated into chat interface
-
----
-
-### 🎯 Sprint 6: Data Visualization & Dashboard (Week 11-12)
-
-#### Goals:
-- [ ] Create interactive dashboards
-- [ ] Implement data visualization library
-- [ ] Build custom charts for sports data
-- [ ] Add real-time updates
-
-#### Tasks:
-1. **Dashboard Development**
-   - Create main dashboard with key metrics
-   - Build sport-specific overview pages
-   - Implement customizable widgets
-   - Add drag-and-drop layout customization
-
-2. **Visualization Components**
-   - Integrate D3.js or Chart.js
-   - Create custom sports charts (shot charts, field positions, etc.)
-   - Build interactive timelines
-   - Implement heatmaps and advanced visualizations
-
-3. **Real-time Updates**
-   - Implement live score updates
-   - Add real-time odds changes
-   - Create push notifications for important events
-   - Build live game tracking
-
-4. **Mobile Optimization**
-   - Optimize visualizations for mobile
-   - Create responsive chart components
-   - Implement touch interactions
-   - Build progressive web app features
-
-**Deliverable:** Rich, interactive data visualization system
-
----
-
-### 🎯 Sprint 7: Advanced Features & Personalization (Week 13-14)
-
-#### Goals:
-- [ ] Implement user preferences system
-- [ ] Create custom alerts and notifications
-- [ ] Build betting tracker
-- [ ] Add social features
-
-#### Tasks:
-1. **Personalization**
-   - Create user preference profiles
-   - Implement favorite teams/players tracking
-   - Build personalized content recommendations
-   - Add custom dashboard layouts
-
-2. **Alert System**
-   - Create custom notification rules
-   - Implement push notifications
-   - Build email/SMS alerts
-   - Add in-app notification center
-
-3. **Betting Tracker**
-   - Create bet logging system
-   - Implement performance tracking
-   - Build analytics for betting history
-   - Add bankroll management tools
-
-4. **Social Features**
-   - Create user profiles
-   - Implement following system
-   - Build community features
-   - Add sharing capabilities
-
-**Deliverable:** Personalized experience with advanced user features
-
----
-
-### 🎯 Sprint 8: Testing, Optimization & Polish (Week 15-16)
-
-#### Goals:
-- [ ] Comprehensive testing
-- [ ] Performance optimization
-- [ ] Security audit
-- [ ] Documentation and polish
-
-#### Tasks:
+#### Key Tasks:
 1. **Testing**
-   - Write unit tests for all components
-   - Implement integration tests
-   - Create E2E test suite
-   - Perform user acceptance testing
+   - Unit tests for utilities and components
+   - Integration tests for data flow
+   - E2E tests with Playwright
+   - Performance testing
 
-2. **Performance Optimization**
-   - Optimize database queries
-   - Implement caching strategies
-   - Optimize frontend bundle size
-   - Conduct load testing
+2. **Bug Fixes & Polish**
+   - Test all features end-to-end
+   - Fix identified bugs
+   - Handle edge cases
+   - Polish UI/UX
 
-3. **Security**
-   - Security audit of all endpoints
-   - Implement rate limiting
-   - Add data validation and sanitization
-   - Set up monitoring and logging
+3. **Launch Preparation**
+   - Security audit
+   - Set up monitoring (error tracking, analytics)
+   - Prepare documentation
+   - Create user guide
 
-4. **Documentation & Polish**
-   - Create user documentation
-   - Write API documentation
-   - Add in-app help system
-   - Polish UI/UX based on feedback
+4. **Production Deployment**
+   - Deploy frontend to Netlify
+   - Verify all environment variables
+   - Test production build
+   - Monitor for errors post-launch
 
-**Deliverable:** Production-ready application
+**Deliverable:** Live, production-ready BetAI platform
 
----
-
-### 🎯 Sprint 9: Beta Launch & Feedback (Week 17-18)
-
-#### Goals:
-- [ ] Beta release to limited users
-- [ ] Gather user feedback
-- [ ] Implement critical fixes
-- [ ] Prepare for public launch
-
-#### Tasks:
-1. **Beta Program**
-   - Set up beta user registration
-   - Create feedback collection system
-   - Implement analytics tracking
-   - Set up crash reporting
-
-2. **Feedback Analysis**
-   - Analyze user feedback
-   - Identify common issues
-   - Prioritize feature requests
-   - Create improvement roadmap
-
-3. **Bug Fixes**
-   - Address critical bugs
-   - Implement quick wins from feedback
-   - Optimize based on usage patterns
-   - Fix performance bottlenecks
-
-4. **Launch Preparation**
-   - Create marketing materials
-   - Set up support system
-   - Prepare launch checklist
-   - Create onboarding flow
-
-**Deliverable:** Refined application ready for public launch
-
----
-
-### 🎯 Sprint 10: Public Launch & Post-Launch (Week 19-20)
-
-#### Goals:
-- [ ] Public launch
-- [ ] Monitor performance
-- [ ] Scale infrastructure
-- [ ] Plan future features
-
-#### Tasks:
-1. **Launch**
-   - Deploy to production
-   - Announce on social media
-   - Submit to directories
-   - Monitor launch metrics
-
-2. **Monitoring & Scaling**
-   - Set up comprehensive monitoring
-   - Scale infrastructure as needed
-   - Optimize based on real usage
-   - Handle support requests
-
-3. **Feature Planning**
-   - Analyze usage data
-   - Plan v2.0 features
-   - Create long-term roadmap
-   - Identify new sports/leagues to add
-
-**Deliverable:** Publicly available sports AI platform
+**Note:** Previous sprints 8-10 have been consolidated into Phase 7 above. See `PLANNING.md` for complete details.
 
 ---
 
 ## Technical Architecture
 
-### Frontend Architecture
+### System Overview
+
 ```
-src/
-├── components/
-│   ├── chat/
-│   │   ├── ChatInterface.tsx
-│   │   ├── Message.tsx
-│   │   └── TypingIndicator.tsx
-│   ├── sports/
-│   │   ├── GameCard.tsx
-│   │   ├── OddsTable.tsx
-│   │   └── PlayerStats.tsx
+┌─────────────────────────────────────────────────────────────┐
+│                    USER BROWSER                              │
+│  React Frontend (Netlify) - TypeScript + Tailwind          │
+└─────────────────┬───────────────────────────────────────────┘
+                  │ HTTPS
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 SUPABASE BACKEND                             │
+│  ┌─────────────┬──────────────┬──────────────┐            │
+│  │ PostgreSQL  │ Edge Functions│ Auth         │            │
+│  │ Database    │ (Deno)        │              │            │
+│  └─────────────┴──────────────┴──────────────┘            │
+└─────────────────┬───────────────────────────────────────────┘
+                  │ Daily Updates (Cron)
+                  ▼
+┌─────────────────────────────────────────────────────────────┐
+│           DAILY DATA FILES (CSV/JSON)                        │
+│  Uploaded to Supabase Storage or fetched by Edge Function   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Frontend Architecture (Next.js App Router)
+```
+frontend/
+├── app/                      # Next.js App Router
+│   ├── (auth)/
+│   │   ├── login/
+│   │   └── register/
 │   ├── dashboard/
-│   │   ├── Dashboard.tsx
-│   │   ├── Widget.tsx
-│   │   └── Chart.tsx
-│   └── ui/
-│       ├── Button.tsx
-│       ├── Card.tsx
-│       └── Modal.tsx
+│   ├── games/
+│   │   └── [sport]/
+│   │       └── [gameId]/
+│   ├── chat/
+│   └── settings/
+├── components/
+│   ├── ui/                   # Base UI components
+│   ├── sports/               # Sports-specific components
+│   ├── chat/                 # Chat interface
+│   └── layout/               # Layout components
 ├── lib/
-│   ├── supabase.ts
-│   ├── kimi.ts
-│   └── sports-api.ts
-├── hooks/
-│   ├── useAuth.ts
-│   ├── useChat.ts
-│   └── useSportsData.ts
-└── pages/
-    ├── index.tsx
-    ├── chat.tsx
-    ├── dashboard.tsx
-    └── settings.tsx
+│   ├── supabase/
+│   │   ├── client.ts         # Client-side Supabase
+│   │   └── server.ts         # Server-side Supabase
+│   ├── database/             # DB access layer
+│   └── utils.ts
+├── hooks/                    # Custom React hooks
+├── stores/                   # Zustand state stores
+├── types/                    # TypeScript types
+└── providers/                # Context providers
 ```
 
 ### Backend Architecture (Supabase)
 ```
-Database Schema:
-- users (auth)
-- teams (sport-specific tables)
-- players (sport-specific tables)
-- games (sport-specific tables)
-- odds (historical and current)
-- news_articles
+supabase/
+├── functions/                # Edge Functions (Deno)
+│   ├── ingest-sports-data/   # Daily data ingestion
+│   ├── ai-chat/              # AI chat integration
+│   └── validate-data/        # Data validation
+├── migrations/               # Database migrations
+│   └── 20250112_initial_schema.sql
+└── seed/                     # Seed data
+
+Database Tables (per sport: nfl, nba, mlb, wnba, soccer):
+- {sport}_teams               # Team information
+- {sport}_players             # Player information
+- {sport}_games               # Games and scores
+- {sport}_game_odds           # Betting odds
+- {sport}_team_stats          # Team statistics
+- {sport}_player_stats        # Player statistics
+
+User Tables:
+- user_profiles
+- user_preferences
+- user_favorite_teams
+- user_bets
 - chat_conversations
 - chat_messages
-- user_preferences
-- user_bets
+- user_notifications
 
-Edge Functions:
-- fetch-sports-data
-- process-odds
-- generate-ai-response
-- send-notifications
+System Tables:
+- data_ingestion_logs
+- sports_news
+- system_config
 ```
 
-### AI Integration Flow
+### Data Flow
+
+**Daily Update Flow:**
 ```
-User Query → Context Retrieval (RAG) → Prompt Engineering → Kimi K2 API → 
-Response Processing → Data Enrichment → Streaming Response → UI Display
+Cron (6 AM ET) → Edge Function → Fetch CSV/JSON →
+Validate & Transform → Update PostgreSQL → Log Results
 ```
+
+**User Query Flow:**
+```
+User Input → Frontend → Edge Function → Query DB for Context →
+Build Prompt → Kimi K2 API → Stream Response → Frontend Display
+```
+
+For complete database schema, see `DATABASE_SCHEMA.md`
 
 ---
 
-## Data Sources & APIs
+## Data Sources & Strategy
 
-### Sports Data APIs
-- **The Odds API** - Betting odds
-- **SportsData.io** - Comprehensive sports data
-- **API-Football** - Soccer data
-- **SportsRadar** - Multi-sport data
-- **ESPN API** - News and scores
+### Data Approach
+**Daily Batch Updates** instead of real-time API calls
 
-### News APIs
-- **NewsAPI.org** - General news
-- **Bing News Search** - Microsoft news
-- **Web Scraping** - Sport-specific sites
+### Data Sources
 
-### AI Model
-- **Kimi K2 Thinking** - Primary language model
-- **Embedding Model** - For RAG system
-- **Fine-tuning** - Sport-specific training (future)
+1. **Initial Phase (Manual Upload)**
+   - CSV/JSON files uploaded to Supabase Storage
+   - Daily manual updates until automation is established
+   - Format: Standardized schemas for each sport
+
+2. **Automated Phase (Future)**
+   - Scheduled web scraping from public sources
+   - Integration with free sports data APIs (if available)
+   - News aggregation APIs (NewsAPI.org, Bing News)
+
+3. **Data Types Needed**
+   - **Games:** Schedule, scores, status (today + this week)
+   - **Teams:** Names, logos, stats, records
+   - **Players:** Names, positions, key stats
+   - **Odds:** Moneyline, spread, total (from various bookmakers)
+   - **News:** Recent articles affecting games/teams
+
+### Update Schedule
+- **6 AM ET Daily:** Games, odds, overnight results
+- **8 AM ET Daily:** Updated stats after games complete
+- **Every 6 hours:** News updates (optional)
+- **Weekly (Sundays):** Historical data compilation
+
+### AI Integration
+- **Kimi K2 Thinking** - Primary language model for chat
+- **RAG System** - Retrieves relevant sports data for context
+- **Prompt Engineering** - Sport-specific templates
 
 ---
 
@@ -550,16 +459,38 @@ Response Processing → Data Enrichment → Streaming Response → UI Display
 
 ## Budget Estimates
 
-### Development Costs
-- **Team Salaries:** $80,000 - $120,000
-- **API Costs:** $500 - $2000/month
-- **Infrastructure:** $100 - $500/month
-- **AI Model Costs:** $200 - $1000/month
+### Development Costs (Solo Developer or Small Team)
+- **Development Time:** 16-18 weeks
+- **Freelance Rate:** ~$5,000 - $15,000 (if outsourcing)
 
-### Total Estimated Cost: $85,000 - $130,000 for v1.0
+### Monthly Operating Costs
+- **Supabase:** $0 (Free tier) → $25/month (Pro) as you scale
+- **Netlify:** $0 (Free tier) → $19/month (Pro) if needed
+- **Kimi K2 API:** ~$50 - $200/month (based on usage)
+- **Data Sources:** $0 (manual/free sources) → $50 - $200/month (premium APIs)
+- **Domain:** ~$15/year
+- **Monitoring/Analytics:** $0 (free tier services)
+
+### Initial Launch Budget
+- **Minimum:** $0 - $100/month (all free tiers + manual data)
+- **Recommended:** $100 - $300/month (paid tiers for better limits)
+- **Scaling:** $500+/month (as user base grows)
+
+### Total Estimated Cost for MVP: $500 - $2,000 (first 3-6 months)
 
 ---
 
-**Document Version:** 1.0  
-**Last Updated:** 2025-11-12  
-**Next Review:** After Sprint 1 completion
+**Document Version:** 2.0
+**Last Updated:** 2025-11-12
+**Architecture:** Daily batch updates (no real-time APIs)
+**Next Review:** After Phase 1 completion
+
+---
+
+## Quick Links
+
+- 📋 **[PLANNING.md](PLANNING.md)** - Complete step-by-step development plan with detailed tasks
+- 🗄️ **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** - Complete database design for all 5 sports
+- 📝 **[claude.md](claude.md)** - Development guidelines and journal system
+- 🔗 **GitHub Issues** - Track individual tasks and bugs
+- 📊 **Project Journals** - `.github/journals/` for development documentation
