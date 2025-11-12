@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetAI - Sports Analysis Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f9fafb;
+            color: #111827;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1920px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a73e8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .sport-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .sport-tab {
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sport-tab:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .sport-tab.active {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            width: 300px;
+            font-size: 0.875rem;
+        }
+
+        .search-box input:focus {
+            outline: 2px solid #1a73e8;
+            outline-offset: 2px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .user-menu {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: flex;
+            max-width: 1920px;
+            margin: 0 auto;
+            min-height: calc(100vh - 65px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .filter-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            transition: background 0.2s;
+        }
+
+        .filter-option:hover {
+            background: #f3f4f6;
+        }
+
+        .filter-option input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .ai-chat-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: transform 0.2s;
+        }
+
+        .ai-chat-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .game-card {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-nfl { background: #013369; color: white; }
+        .badge-nba { background: #17408B; color: white; }
+        .badge-mlb { background: #041E42; color: white; }
+        .badge-live { background: #ea4335; color: white; }
+        .badge-scheduled { background: #e5e7eb; color: #6b7280; }
+        .badge-completed { background: #34a853; color: white; }
+
+        .game-time {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .teams {
+            margin-bottom: 1.5rem;
+        }
+
+        .team-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+        }
+
+        .team-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .team-logo {
+            width: 40px;
+            height: 40px;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .team-name {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .team-record {
+            color: #6b7280;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .team-score {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .odds-section {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+
+        .odds-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .odds-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+        }
+
+        .odd-item {
+            text-align: center;
+        }
+
+        .odd-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .odd-value {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .game-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .view-details-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            color: #111827;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .view-details-btn:hover {
+            background: #f9fafb;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        /* Analytics Section */
+        .analytics-section {
+            margin-top: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            background: white;
+            color: #6b7280;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #f9fafb;
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .chart-subtitle {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            cursor: pointer;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(to bottom, #f3f4f6, #f9fafb);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            border: 2px dashed #e5e7eb;
+        }
+
+        /* Legend */
+        .chart-legend {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-label {
+            color: #6b7280;
+        }
+
+        .legend-value {
+            font-weight: 600;
+            color: #111827;
+        }
+
+        /* Stats Table */
+        .stats-table {
+            width: 100%;
+            margin-top: 2rem;
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+
+        .stats-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .stats-table th {
+            background: #f9fafb;
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .stats-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            color: #111827;
+        }
+
+        .stats-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .player-avatar {
+            width: 32px;
+            height: 32px;
+            background: #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .player-name {
+            font-weight: 600;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .trend-up {
+            color: #34a853;
+        }
+
+        .trend-down {
+            color: #ea4335;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                height: 100vh;
+                z-index: 90;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">B</div>
+                <span>BetAI</span>
+            </div>
+
+            <nav class="sport-tabs">
+                <button class="sport-tab active">NFL</button>
+                <button class="sport-tab">NBA</button>
+                <button class="sport-tab">MLB</button>
+                <button class="sport-tab">WNBA</button>
+                <button class="sport-tab">Soccer</button>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-box">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input type="text" placeholder="Search games, teams...">
+                </div>
+                <div class="user-menu">JD</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Quick Stats</div>
+                <div class="stat-item">
+                    <span class="stat-label">Today's Games</span>
+                    <span class="stat-value">12</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Live Now</span>
+                    <span class="stat-value">3</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Upcoming</span>
+                    <span class="stat-value">9</span>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-title">Filters</div>
+                <div class="filter-option">
+                    <input type="checkbox" id="live-only">
+                    <label for="live-only">Live Games Only</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="favorites">
+                    <label for="favorites">My Favorites</label>
+                </div>
+                <div class="filter-option">
+                    <input type="checkbox" id="high-odds">
+                    <label for="high-odds">High Value Odds</label>
+                </div>
+            </div>
+
+            <button class="ai-chat-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                AI Assistant
+            </button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Today's Games</h1>
+                <p class="page-subtitle">Tuesday, November 12, 2025</p>
+            </div>
+
+            <!-- Games Grid -->
+            <div class="games-grid">
+                <!-- Game Card 1 - Live -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-nfl">NFL</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="game-time">20:20 ET</span>
+                            <span class="badge badge-live">🔴 LIVE</span>
+                        </div>
+                    </div>
+
+                    <div class="teams">
+                        <div class="team-row">
+                            <div class="team-info">
+                                <div class="team-logo">SF</div>
+                                <div>
+                                    <div class="team-name">San Francisco 49ers</div>
+                                    <div class="team-record">10-1</div>
+                                </div>
+                            </div>
+                            <div class="team-score">28</div>
+                        </div>
+
+                        <div class="team-row">
+                            <div class="team-info">
+                                <div class="team-logo">KC</div>
+                                <div>
+                                    <div class="team-name">Kansas City Chiefs</div>
+                                    <div class="team-record">8-3</div>
+                                </div>
+                            </div>
+                            <div class="team-score">24</div>
+                        </div>
+                    </div>
+
+                    <div class="odds-section">
+                        <div class="odds-title">Betting Lines</div>
+                        <div class="odds-grid">
+                            <div class="odd-item">
+                                <div class="odd-label">Spread</div>
+                                <div class="odd-value">SF -3.5</div>
+                            </div>
+                            <div class="odd-item">
+                                <div class="odd-label">Total</div>
+                                <div class="odd-value">O/U 47.5</div>
+                            </div>
+                            <div class="odd-item">
+                                <div class="odd-label">Moneyline</div>
+                                <div class="odd-value">-165</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-footer">
+                        <div class="game-info">
+                            <span>📍 Arrowhead Stadium</span>
+                            <span>📺 NBC</span>
+                        </div>
+                        <button class="view-details-btn">View Details & Analysis →</button>
+                    </div>
+                </div>
+
+                <!-- Game Card 2 - Scheduled -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-nba">NBA</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="game-time">19:30 ET</span>
+                            <span class="badge badge-scheduled">Scheduled</span>
+                        </div>
+                    </div>
+
+                    <div class="teams">
+                        <div class="team-row">
+                            <div class="team-info">
+                                <div class="team-logo">LAL</div>
+                                <div>
+                                    <div class="team-name">Los Angeles Lakers</div>
+                                    <div class="team-record">7-4</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="team-row">
+                            <div class="team-info">
+                                <div class="team-logo">BOS</div>
+                                <div>
+                                    <div class="team-name">Boston Celtics</div>
+                                    <div class="team-record">9-2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="odds-section">
+                        <div class="odds-title">Betting Lines</div>
+                        <div class="odds-grid">
+                            <div class="odd-item">
+                                <div class="odd-label">Spread</div>
+                                <div class="odd-value">BOS -5.5</div>
+                            </div>
+                            <div class="odd-item">
+                                <div class="odd-label">Total</div>
+                                <div class="odd-value">O/U 218.5</div>
+                            </div>
+                            <div class="odd-item">
+                                <div class="odd-label">Moneyline</div>
+                                <div class="odd-value">-220</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-footer">
+                        <div class="game-info">
+                            <span>📍 TD Garden</span>
+                            <span>📺 ESPN</span>
+                        </div>
+                        <button class="view-details-btn">View Details & Analysis →</button>
+                    </div>
+                </div>
+
+                <!-- Game Card 3 - Completed -->
+                <div class="game-card">
+                    <div class="game-header">
+                        <span class="badge badge-mlb">MLB</span>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="game-time">Completed</span>
+                            <span class="badge badge-completed">Final</span>
+                        </div>
+                    </div>
+
+                    <div class="teams">
+                        <div class="team-row">
+                            <div class="team-info">
+                                <div class="team-logo">NYY</div>
+                                <div>
+                                    <div class="team-name">New York Yankees</div>
+                                    <div class="team-record">95-67</div>
+                                </div>
+                            </div>
+                            <div class="team-score">5</div>
+                        </div>
+
+                        <div class="team-row">
+                            <div class="team-info">
+                                <div class="team-logo">LAD</div>
+                                <div>
+                                    <div class="team-name">Los Angeles Dodgers</div>
+                                    <div class="team-record">92-70</div>
+                                </div>
+                            </div>
+                            <div class="team-score">3</div>
+                        </div>
+                    </div>
+
+                    <div class="odds-section">
+                        <div class="odds-title">Final Odds</div>
+                        <div class="odds-grid">
+                            <div class="odd-item">
+                                <div class="odd-label">Spread</div>
+                                <div class="odd-value">NYY -1.5</div>
+                            </div>
+                            <div class="odd-item">
+                                <div class="odd-label">Total</div>
+                                <div class="odd-value">O/U 8.5</div>
+                            </div>
+                            <div class="odd-item">
+                                <div class="odd-label">Moneyline</div>
+                                <div class="odd-value">-145</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="game-footer">
+                        <div class="game-info">
+                            <span>📍 Yankee Stadium</span>
+                            <span>🏆 Winner: NYY</span>
+                        </div>
+                        <button class="view-details-btn">View Full Stats →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <section class="analytics-section">
+                <div class="section-header">
+                    <h2 class="section-title">📊 Custom Analytics</h2>
+                    <div class="section-actions">
+                        <button class="btn">Reset</button>
+                        <button class="btn">Save View</button>
+                        <button class="btn btn-primary">+ Add Chart</button>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <!-- Chart 1 - Line Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h3 class="chart-title">Team Performance</h3>
+                                <p class="chart-subtitle">Points scored - Last 10 games</p>
+                            </div>
+                            <div class="chart-actions">
+                                <button class="icon-btn" title="Settings">⚙️</button>
+                                <button class="icon-btn" title="Download">⬇️</button>
+                                <button class="icon-btn" title="Fullscreen">⛶</button>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #013369;"></div>
+                                <span class="legend-label">Kansas City</span>
+                                <span class="legend-value trend-indicator trend-up">↗ +2.3</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #AA0000;"></div>
+                                <span class="legend-label">San Francisco</span>
+                                <span class="legend-value trend-indicator trend-down">↘ -1.5</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-placeholder">
+                            📈 Line Chart: Team Performance Trends
+                        </div>
+                    </div>
+
+                    <!-- Chart 2 - Bar Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h3 class="chart-title">Head-to-Head Comparison</h3>
+                                <p class="chart-subtitle">Key statistics breakdown</p>
+                            </div>
+                            <div class="chart-actions">
+                                <button class="icon-btn">⚙️</button>
+                                <button class="icon-btn">⬇️</button>
+                                <button class="icon-btn">⛶</button>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #013369;"></div>
+                                <span class="legend-label">Kansas City</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #AA0000;"></div>
+                                <span class="legend-label">San Francisco</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-placeholder">
+                            📊 Bar Chart: Statistical Comparison
+                        </div>
+                    </div>
+
+                    <!-- Chart 3 - Area Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h3 class="chart-title">Odds Movement</h3>
+                                <p class="chart-subtitle">Last 24 hours</p>
+                            </div>
+                            <div class="chart-actions">
+                                <button class="icon-btn">⚙️</button>
+                                <button class="icon-btn">⬇️</button>
+                                <button class="icon-btn">⛶</button>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #1a73e8;"></div>
+                                <span class="legend-label">Spread Movement</span>
+                                <span class="legend-value trend-indicator trend-up">↗ +0.5</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-placeholder">
+                            📉 Area Chart: Real-time Odds Tracking
+                        </div>
+                    </div>
+
+                    <!-- Chart 4 - Radar Chart -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <h3 class="chart-title">QB Comparison</h3>
+                                <p class="chart-subtitle">Normalized attributes (0-100)</p>
+                            </div>
+                            <div class="chart-actions">
+                                <button class="icon-btn">⚙️</button>
+                                <button class="icon-btn">⬇️</button>
+                                <button class="icon-btn">⛶</button>
+                            </div>
+                        </div>
+
+                        <div class="chart-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #013369;"></div>
+                                <span class="legend-label">Patrick Mahomes</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #AA0000;"></div>
+                                <span class="legend-label">Brock Purdy</span>
+                            </div>
+                        </div>
+
+                        <div class="chart-placeholder">
+                            🕸️ Radar Chart: Player Attributes
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Table -->
+            <section class="stats-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Team</th>
+                            <th style="text-align: right;">CMP</th>
+                            <th style="text-align: right;">ATT</th>
+                            <th style="text-align: right;">YDS</th>
+                            <th style="text-align: right;">TD</th>
+                            <th style="text-align: right;">INT</th>
+                            <th style="text-align: right;">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar">PM</div>
+                                    <span class="player-name">Patrick Mahomes</span>
+                                </div>
+                            </td>
+                            <td>KC</td>
+                            <td style="text-align: right;">28</td>
+                            <td style="text-align: right;">38</td>
+                            <td style="text-align: right;">312</td>
+                            <td style="text-align: right;">3</td>
+                            <td style="text-align: right;">0</td>
+                            <td style="text-align: right; color: #1a73e8; font-weight: 600;">128.4</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar">BP</div>
+                                    <span class="player-name">Brock Purdy</span>
+                                </div>
+                            </td>
+                            <td>SF</td>
+                            <td style="text-align: right;">31</td>
+                            <td style="text-align: right;">41</td>
+                            <td style="text-align: right;">289</td>
+                            <td style="text-align: right;">2</td>
+                            <td style="text-align: right;">1</td>
+                            <td style="text-align: right; color: #1a73e8; font-weight: 600;">102.7</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Simple interactivity
+        document.querySelectorAll('.sport-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.sport-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (!e.target.classList.contains('view-details-btn')) {
+                    console.log('Navigate to game details');
+                }
+            });
+        });
+
+        document.querySelector('.ai-chat-button').addEventListener('click', () => {
+            alert('AI Chat Assistant opening... (Would slide in from right)');
+        });
+    </script>
+</body>
+</html>
